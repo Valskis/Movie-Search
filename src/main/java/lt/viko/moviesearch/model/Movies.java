@@ -10,6 +10,7 @@ public class Movies {
     private String imdbId;
 
     @JsonProperty("titleText")
+
     private TitleText titleText;
 
     @JsonProperty("originalTitleText")
@@ -36,8 +37,6 @@ public class Movies {
         this.releaseDate = releaseDate;
         this.primaryImage = primaryImage;
     }
-
-    // Getters and Setters
 
     @JsonProperty("_id")
     public String getId() {

@@ -2,8 +2,10 @@ package lt.viko.moviesearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.eo.Se;
 import lt.viko.moviesearch.model.UserInput;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class MovieSearchService {
     private static final String DATABASE_FILE_PATH = "searches.json";
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -33,6 +36,8 @@ public class MovieSearchService {
 
             // Send the API request and get the response
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response Body: " + response.body());
 
             // Extract the search results from the response body
             List<String> searchResults = extractSearchResults(response.body());
