@@ -37,7 +37,7 @@ public class MovieSearchService {
             // Send the API request and get the response
             HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("Response Body: " + response.body());
+            System.out.println("Output: " + response.body());
 
             // Extract the search results from the response body
             List<String> searchResults = extractSearchResults(response.body());
