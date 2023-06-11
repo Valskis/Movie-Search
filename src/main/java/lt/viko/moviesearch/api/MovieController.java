@@ -24,11 +24,4 @@ public class MovieController {
         movieSearchService.searchMovies(userInput);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Movies> getMovieById(@PathVariable("id") String id) {
-        Movies movie = new Movies();
-        movie.setId(id);
-        return ResponseEntity.ok(movie);
-    }
 }

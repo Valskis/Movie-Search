@@ -24,11 +24,4 @@ public class ActorController {
         actorSearchService.searchActors(userInput);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Actors> getActorById(@PathVariable("id") String id) {
-        Actors actor = new Actors();
-        actor.setId(id);
-        return ResponseEntity.ok(actor);
-    }
 }
