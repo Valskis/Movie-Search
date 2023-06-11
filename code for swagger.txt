@@ -1,0 +1,177 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Movie Search API
+basePath: /api
+tags:
+  - name: actors
+    description: Operations related to actors
+  - name: movies
+    description: Operations related to movies
+schemes:
+  - http
+paths:
+  /actors/search:
+    post:
+      tags:
+        - actors
+      summary: Search actors
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: userInput
+          description: User input for actor search
+          schema:
+            $ref: "#/definitions/UserInput"
+      responses:
+        "201":
+          description: Actor search successful
+  /actors/{id}:
+    get:
+      tags:
+        - actors
+      summary: Get actor by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of the actor
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Actor details retrieved successfully
+          schema:
+            $ref: "#/definitions/Actors"
+  /movies/search:
+    post:
+      tags:
+        - movies
+      summary: Search movies
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: userInput
+          description: User input for movie search
+          schema:
+            $ref: "#/definitions/UserInput"
+      responses:
+        "201":
+          description: Movie search successful
+  /movies/{id}:
+    get:
+      tags:
+        - movies
+      summary: Get movie by ID
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of the movie
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Movie details retrieved successfully
+          schema:
+            $ref: "#/definitions/Movies"
+definitions:
+  Actors:
+    type: object
+    properties:
+      nconst:
+        type: string
+      primaryName:
+        type: string
+      birthYear:
+        type: integer
+      deathYear:
+        type: integer
+      primaryProfession:
+        type: string
+      knownForTitles:
+        type: string
+  Movies:
+    type: object
+    properties:
+      _id:
+        type: string
+      id:
+        type: string
+      titleText:
+        $ref: "#/definitions/TitleText"
+      originalTitleText:
+        $ref: "#/definitions/TitleText"
+      releaseYear:
+        $ref: "#/definitions/YearRange"
+      releaseDate:
+        $ref: "#/definitions/ReleaseDate"
+      primaryImage:
+        $ref: "#/definitions/PrimaryImage"
+  TitleText:
+    type: object
+    properties:
+      text:
+        type: string
+  YearRange:
+    type: object
+    properties:
+      year:
+        type: integer
+      endYear:
+        type: integer
+  ReleaseDate:
+    type: object
+    properties:
+      day:
+        type: integer
+      month:
+        type: integer
+      year:
+        type: integer
+  PrimaryImage:
+    type: object
+    properties:
+      id:
+        type: string
+      width:
+        type: integer
+      height:
+        type: integer
+      url:
+        type: string
+      caption:
+        $ref: "#/definitions/Caption"
+  Caption:
+    type: object
+    properties:
+      text:
+        type: string
+  UserInput:
+    type: object
+    properties:
+      query:
+        type: string
+      filters:
+        $ref: "#/definitions/Filters"
+  Filters:
+    type: object
+    properties:
+      genre:
+        type: string
+      language:
+        type: string
+      releaseYear:
+        $ref: "#/definitions/YearRange"
+      actor:
+        type: string
+      director:
+        type: string
