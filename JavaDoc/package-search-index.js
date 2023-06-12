@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"lt.viko.moviesearch"},{"l":"lt.viko.moviesearch.api"},{"l":"lt.viko.moviesearch.model"},{"l":"lt.viko.moviesearch.service"}];updateSearchResults();
