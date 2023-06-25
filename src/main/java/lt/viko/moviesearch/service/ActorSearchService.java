@@ -3,7 +3,6 @@ package lt.viko.moviesearch.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lt.viko.moviesearch.model.Actors;
 import lt.viko.moviesearch.model.UserInput;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,7 +22,8 @@ public class ActorSearchService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String API_URL = "https://moviesdatabase.p.rapidapi.com/actors/";
 
-    public void searchActors(UserInput userInput) {
+    public List<Object> searchActors(UserInput userInput) throws JsonProcessingException {
+        HttpResponse<String> response = null;
         try {
             String encodedName = userInput.getActorName().replaceAll(" ", "%20");
             String apiUrl = API_URL + encodedName;
@@ -35,12 +36,12 @@ public class ActorSearchService {
                     .build();
 
             // Send the API request and get the response
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
             System.out.println("Output: " + response.body());
 
             // Extract the search results from the response body
-            List<Actors> searchResults = extractSearchResults(response.body());
+            List<String> searchResults = extractSearchResults(response.body());
 
             // Save the searched actors to the database
             saveSearch(userInput, searchResults);
@@ -49,10 +50,11 @@ public class ActorSearchService {
         } catch (InterruptedException e) {
             System.out.println("API request interrupted: " + e.getMessage());
         }
+        return Collections.singletonList(response.body());
     }
 
-    private List<Actors> extractSearchResults(String responseBody) throws JsonProcessingException {
-        List<Actors> searchResults = new ArrayList<>();
+    private List<String> extractSearchResults(String responseBody) throws JsonProcessingException {
+        List<String> searchResults = new ArrayList<>();
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode responseJson = objectMapper.readTree(responseBody);
@@ -68,25 +70,25 @@ public class ActorSearchService {
                 String knownForTitles = actorNode.path("knownForTitles").asText();
 
                 // Create an Actor object with the extracted information
-                Actors actor = new Actors(id, primaryName, birthYear, deathYear, primaryProfession, knownForTitles);
-                searchResults.add(actor);
+                String searchResult = primaryName + id + primaryName + birthYear + deathYear + primaryProfession + knownForTitles;
+                searchResults.add(searchResult);
             }
         }
 
         return searchResults;
     }
 
-    private void saveSearch(UserInput userInput, List<Actors> searchResults) {
+    private void saveSearch(UserInput userInput, List<String> searchResults) {
         try {
-            // Create a Search object to store the user input and search results
-            Search search = new Search(userInput, searchResults);
+            // Create a Search object to store the user input
+            Search search = new Search(userInput);
 
             // Convert the search object to JSON string
             String json = objectMapper.writeValueAsString(search);
 
             // Write the JSON string to the database file
             FileWriter writer = new FileWriter(DATABASE_FILE_PATH, true);
-            writer.write(json + "\n");
+            writer.write(json + "\n"); // Add a new line after each search
             writer.close();
 
             System.out.println("Search saved successfully.");
@@ -97,17 +99,16 @@ public class ActorSearchService {
         }
     }
 
+
     private static class Search {
         private UserInput userInput;
-        private List<Actors> searchResults;
 
         public Search() {
             // Default constructor for JSON serialization
         }
 
-        public Search(UserInput userInput, List<Actors> searchResults) {
+        public Search(UserInput userInput) {
             this.userInput = userInput;
-            this.searchResults = searchResults;
         }
 
         public UserInput getUserInput() {
@@ -117,13 +118,6 @@ public class ActorSearchService {
         public void setUserInput(UserInput userInput) {
             this.userInput = userInput;
         }
-
-        public List<Actors> getSearchResults() {
-            return searchResults;
-        }
-
-        public void setSearchResults(List<Actors> searchResults) {
-            this.searchResults = searchResults;
-        }
     }
+
 }

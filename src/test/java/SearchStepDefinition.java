@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,13 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Component
 public class SearchStepDefinition {
 
     private final MovieController movieController;
-    private ResponseEntity<String> response;
+    private ResponseEntity<List<Object>> response;
 
     @Autowired
     public SearchStepDefinition(MovieController movieController) {
@@ -27,7 +30,7 @@ public class SearchStepDefinition {
     }
 
     @When("the user sends a POST request to \"/api/movies/search\" with the following request body:")
-    public void whenUserSendsPostRequestWithRequestBody(String requestBody) {
+    public void whenUserSendsPostRequestWithRequestBody(String requestBody) throws JsonProcessingException {
         UserInput userInput = new UserInput("Avengers", "");
         response = movieController.searchMovies(userInput);
     }

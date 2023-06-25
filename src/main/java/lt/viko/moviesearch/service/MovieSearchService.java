@@ -2,7 +2,6 @@ package lt.viko.moviesearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.java.eo.Se;
 import lt.viko.moviesearch.model.UserInput;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,7 +22,8 @@ public class MovieSearchService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String API_URL = "https://moviesdatabase.p.rapidapi.com/titles/search/title/";
 
-    public void searchMovies(UserInput userInput) {
+    public List<Object> searchMovies(UserInput userInput) throws JsonProcessingException {
+        HttpResponse<String> response = null;
         try {
             String encodedTitle = userInput.getMovieTitle().replaceAll(" ", "%20");
             String apiUrl = API_URL + encodedTitle + "?exact=false&titleType=movie";
@@ -35,7 +36,7 @@ public class MovieSearchService {
                     .build();
 
             // Send the API request and get the response
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
             System.out.println("Output: " + response.body());
 
@@ -44,11 +45,13 @@ public class MovieSearchService {
 
             // Save the searched movies to the database
             saveSearch(userInput, searchResults);
+
         } catch (IOException e) {
             System.out.println("Error sending API request: " + e.getMessage());
         } catch (InterruptedException e) {
             System.out.println("API request interrupted: " + e.getMessage());
         }
+        return Collections.singletonList(response.body());
     }
 
     private List<String> extractSearchResults(String responseBody) throws JsonProcessingException {
@@ -76,8 +79,8 @@ public class MovieSearchService {
 
     private void saveSearch(UserInput userInput, List<String> searchResults) {
         try {
-            // Create a Search object to store the user input and search results
-            Search search = new Search(userInput, searchResults);
+            // Create a Search object to store the user input
+            Search search = new Search(userInput);
 
             // Convert the search object to JSON string
             String json = objectMapper.writeValueAsString(search);
@@ -95,17 +98,16 @@ public class MovieSearchService {
         }
     }
 
+
     private static class Search {
         private UserInput userInput;
-        private List<String> searchResults;
 
         public Search() {
             // Default constructor for JSON serialization
         }
 
-        public Search(UserInput userInput, List<String> searchResults) {
+        public Search(UserInput userInput) {
             this.userInput = userInput;
-            this.searchResults = searchResults;
         }
 
         public UserInput getUserInput() {
@@ -115,13 +117,6 @@ public class MovieSearchService {
         public void setUserInput(UserInput userInput) {
             this.userInput = userInput;
         }
-
-        public List<String> getSearchResults() {
-            return searchResults;
-        }
-
-        public void setSearchResults(List<String> searchResults) {
-            this.searchResults = searchResults;
-        }
     }
+
 }
