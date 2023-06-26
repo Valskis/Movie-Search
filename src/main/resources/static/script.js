@@ -5,7 +5,18 @@ function searchMovies() {
         actorName: ''
     };
 
-    searchAPI('/api/movies/search', userInput);
+    fetch('/api/movies/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userInput)
+    })
+        .then(res => res.json())
+        .then(data => {
+            displayMovieResults(data);
+        })
+        .catch(err => console.log(err));
 }
 
 function searchActors() {
@@ -15,60 +26,56 @@ function searchActors() {
         actorName: actorInput
     };
 
-    searchAPI('/api/actors/search', userInput);
-}
-
-function searchAPI(url, userInput) {
-    fetch(url, {
+    fetch('/api/actors/search', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(userInput)
     })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Error searching API');
-            }
-        })
+        .then(res => res.json())
         .then(data => {
-            displayResults(data);
+            displayActorResults(data);
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(err => console.log(err));
 }
 
-function displayResults(data) {
+function displayMovieResults(data) {
     const resultContainer = document.getElementById('resultContainer');
     resultContainer.innerHTML = '';
 
     if (data.length === 0) {
-        resultContainer.textContent = 'No results found.';
+        resultContainer.textContent = 'No movie results found.';
     } else {
-        data.forEach(item => {
-            const itemContainer = document.createElement('div');
-            itemContainer.classList.add('item-container');
+        data.forEach(movie => {
+            const movieContainer = document.createElement('div');
+            movieContainer.classList.add('movie-container');
 
-            if (item.hasOwnProperty('imdbId')) {
-                const movieTitle = item.titleText ? item.titleText.text : 'Unknown Title';
-                const releaseYear = item.releaseYear ? item.releaseYear.year : 'Unknown Year';
+            const info = document.createElement('p');
+            info.textContent = JSON.stringify(movie, null, 2);
+            movieContainer.appendChild(info);
 
-                const movieInfo = document.createElement('p');
-                movieInfo.textContent = `Title: ${movieTitle}, Release Year: ${releaseYear}`;
-                itemContainer.appendChild(movieInfo);
-            } else if (item.hasOwnProperty('id')) {
-                const actorName = item.primaryName ? item.primaryName : 'Unknown Name';
-                const birthYear = item.birthYear ? item.birthYear : 'Unknown Year';
+            resultContainer.appendChild(movieContainer);
+        });
+    }
+}
 
-                const actorInfo = document.createElement('p');
-                actorInfo.textContent = `Actor: ${actorName}, Birth Year: ${birthYear}`;
-                itemContainer.appendChild(actorInfo);
-            }
+function displayActorResults(data) {
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
 
-            resultContainer.appendChild(itemContainer);
+    if (data.length === 0) {
+        resultContainer.textContent = 'No actor results found.';
+    } else {
+        data.forEach(actor => {
+            const actorContainer = document.createElement('div');
+            actorContainer.classList.add('actor-container');
+
+            const info = document.createElement('p');
+            info.textContent = JSON.stringify(actor, null, 2);
+            actorContainer.appendChild(info);
+
+            resultContainer.appendChild(actorContainer);
         });
     }
 }

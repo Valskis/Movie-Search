@@ -7,6 +7,7 @@
 
 h1 {
     font-size: 24px;
+    margin-bottom: 20px;
 }
 
 .search-container {
@@ -20,9 +21,29 @@ input[type="text"] {
 
 button {
     padding: 8px 16px;
+    background-color: #007bff;
+    color: #ac3a3a;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 #resultContainer {
     margin-top: 20px;
     text-align: left;
+}
+
+.movie-container,
+.actor-container {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.movie-container p,
+.actor-container p {
+    margin: 0;
+    white-space: pre-wrap;
 }
