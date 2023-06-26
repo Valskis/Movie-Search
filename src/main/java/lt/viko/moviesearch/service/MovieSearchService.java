@@ -16,12 +16,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * MovieSearchService class represents MovieSearchService object which is responsible
+ * for searching movies
+ * @version 1.0
+ */
 @Service
 public class MovieSearchService {
     private static final String DATABASE_FILE_PATH = "searches.json";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String API_URL = "https://moviesdatabase.p.rapidapi.com/titles/search/title/";
 
+    /**
+     * Saves the searched movies to the database
+     * @param userInput the user input
+     */
     public List<Object> searchMovies(UserInput userInput) throws JsonProcessingException {
         HttpResponse<String> response = null;
         try {
@@ -54,6 +63,11 @@ public class MovieSearchService {
         return Collections.singletonList(response.body());
     }
 
+    /**
+     * Extracts the search results from the API response body
+     * @param responseBody the API response body
+     * @return the list of search results
+     */
     private List<String> extractSearchResults(String responseBody) throws JsonProcessingException {
         List<String> searchResults = new ArrayList<>();
 
@@ -77,6 +91,11 @@ public class MovieSearchService {
     }
 
 
+    /**
+     * Saves the search to the database
+     * @param userInput the user input
+     * @param searchResults the list of search results
+     */
     private void saveSearch(UserInput userInput, List<String> searchResults) {
         try {
             // Create a Search object to store the user input
@@ -99,6 +118,10 @@ public class MovieSearchService {
     }
 
 
+    /**
+     * Search class represents a search object which is used to store the user input
+     * @version 1.0
+     */
     private static class Search {
         private UserInput userInput;
 

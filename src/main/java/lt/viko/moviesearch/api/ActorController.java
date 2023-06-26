@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * ActorController class represents ActorController object which is responsible
+ * for GET and POST requests related to actors
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/actors")
 public class ActorController {
@@ -22,6 +27,10 @@ public class ActorController {
         this.actorSearchService = actorSearchService;
     }
 
+    /**
+     * GET request to get all actors
+     * @return list of actors
+     */
     @PostMapping("/search")
     public ResponseEntity<List<Object>> searchActors(@RequestBody UserInput userInput) {
         List<Object> results;

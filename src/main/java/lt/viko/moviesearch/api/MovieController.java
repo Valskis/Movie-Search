@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * MovieController class represents MovieController object which is responsible
+ * for GET and POST requests related to movies
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
@@ -23,6 +28,10 @@ public class MovieController {
         this.movieSearchService = movieSearchService;
     }
 
+    /**
+     * GET request to get all movies
+     * @return list of movies
+     */
     @PostMapping("/search")
     public ResponseEntity<List<Object>> searchMovies(@RequestBody UserInput userInput) {
         List<Object> results;

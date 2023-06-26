@@ -2,6 +2,10 @@ package lt.viko.moviesearch.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/** Represents UserInput object that is used to store data from JSON file
+ * with the help of Jackson library
+ * @version 1.0
+ */
 public class UserInput {
 
     @JsonProperty("movieTitle")

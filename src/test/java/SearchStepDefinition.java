@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+/**
+ * Cucumber step definitions for movie search feature
+ */
 public class SearchStepDefinition {
 
     private MovieController movieController;
