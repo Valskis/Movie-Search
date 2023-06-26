@@ -42,4 +42,20 @@ public class MovieController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(results);
     }
+
+    /**
+     * GET request to search upcoming movies
+     * @return list of upcoming movies
+     */
+    @RequestMapping(value = "/upcoming", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<List<Object>> searchUpcomingMovies() {
+        List<Object> results;
+        try {
+            results = movieSearchService.searchUpcomingMovies();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(results);
+    }
+
 }

@@ -92,6 +92,45 @@ public class MovieSearchService {
 
 
     /**
+     * Sends a request to search upcoming movies
+     * @return the search results
+     */
+    public List<Object> searchUpcomingMovies() throws JsonProcessingException {
+        HttpResponse<String> response = null;
+        try {
+            String apiUrl = "https://moviesdatabase.p.rapidapi.com/titles/x/upcoming";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .header("X-RapidAPI-Key", "e8a0cab474msh6f8a9cc15939910p170f76jsnb5332a8a4543")
+                    .header("X-RapidAPI-Host", "moviesdatabase.p.rapidapi.com")
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            // Send the API request and get the response
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Output: " + response.body());
+
+            // Extract the search results from the response body
+            List<String> searchResults = extractSearchResults(response.body());
+
+            // Convert the search results to a List<Object>
+            List<Object> searchResultsAsObjects = new ArrayList<>(searchResults);
+
+            return Collections.singletonList(response.body());
+        } catch (IOException e) {
+            System.out.println("Error sending API request: " + e.getMessage());
+        } catch (InterruptedException e) {
+            System.out.println("API request interrupted: " + e.getMessage());
+        }
+        return Collections.singletonList(response.body());
+    }
+
+
+
+
+    /**
      * Saves the search to the database
      * @param userInput the user input
      * @param searchResults the list of search results
