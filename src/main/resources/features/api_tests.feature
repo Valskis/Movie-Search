@@ -1,11 +1,7 @@
-Feature: Movie Search API
+Feature: Movie search
 
-  Scenario: Searching for movies
-    Given a user wants to search for movies
-    When the user sends a POST request to "/api/movies/search" with the following request body:
-    """
-    {
-      "movieTitle": "Harry Potter"
-    }
-    """
-    Then the response status should be 200
+  Scenario: Search by movie title
+    Given Client sends GET request with a movie title
+    When HTTP GET reqest sent to the server
+    Then List of movies with the same title is returned
+
