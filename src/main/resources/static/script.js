@@ -1,81 +1,86 @@
-function searchMovies() {
-    const movieInput = document.getElementById('movieInput').value;
-    const userInput = {
-        movieTitle: movieInput,
-        actorName: ''
-    };
+$(document).ready(function() {
+    $("#searchMoviesBtn").click(function() {
+        var movieTitle = $("#movieTitle").val();
+        var actorName = $("#actorName").val();
+        var userInput = { movieTitle: movieTitle, actorName: actorName };
 
-    fetch('/api/movies/search', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userInput)
-    })
-        .then(res => res.json())
-        .then(data => {
-            displayMovieResults(data);
-        })
-        .catch(err => console.log(err));
-}
-
-function searchActors() {
-    const actorInput = document.getElementById('actorInput').value;
-    const userInput = {
-        movieTitle: '',
-        actorName: actorInput
-    };
-
-    fetch('/api/actors/search', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userInput)
-    })
-        .then(res => res.json())
-        .then(data => {
-            displayActorResults(data);
-        })
-        .catch(err => console.log(err));
-}
-
-function displayMovieResults(data) {
-    const resultContainer = document.getElementById('resultContainer');
-    resultContainer.innerHTML = '';
-
-    if (data.length === 0) {
-        resultContainer.textContent = 'No movie results found.';
-    } else {
-        data.forEach(movie => {
-            const movieContainer = document.createElement('div');
-            movieContainer.classList.add('movie-container');
-
-            const info = document.createElement('p');
-            info.textContent = JSON.stringify(movie, null, 2);
-            movieContainer.appendChild(info);
-
-            resultContainer.appendChild(movieContainer);
+        $.ajax({
+            url: "/api/movies/search",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(userInput),
+            success: function(response) {
+                displayMovieResults(response);
+            },
+            error: function(xhr, status, error) {
+                console.log("Error: " + error);
+            }
         });
-    }
-}
+    });
 
-function displayActorResults(data) {
-    const resultContainer = document.getElementById('resultContainer');
-    resultContainer.innerHTML = '';
+    $("#searchActorsBtn").click(function() {
+        var movieTitle = $("#movieTitle").val();
+        var actorName = $("#actorName").val();
+        var userInput = { movieTitle: movieTitle, actorName: actorName };
 
-    if (data.length === 0) {
-        resultContainer.textContent = 'No actor results found.';
-    } else {
-        data.forEach(actor => {
-            const actorContainer = document.createElement('div');
-            actorContainer.classList.add('actor-container');
-
-            const info = document.createElement('p');
-            info.textContent = JSON.stringify(actor, null, 2);
-            actorContainer.appendChild(info);
-
-            resultContainer.appendChild(actorContainer);
+        $.ajax({
+            url: "/api/actors/search",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(userInput),
+            success: function(response) {
+                displayActorResults(response);
+            },
+            error: function(xhr, status, error) {
+                console.log("Error: " + error);
+            }
         });
+    });
+
+    $("#searchUpcomingMoviesBtn").click(function() {
+        $.ajax({
+            url: "/api/movies/upcoming",
+            type: "GET",
+            success: function(response) {
+                displayMovieResults(response);
+            },
+            error: function(xhr, status, error) {
+                console.log("Error: " + error);
+            }
+        });
+    });
+
+    function displayMovieResults(data) {
+        var resultsContainer = $("#resultsContainer");
+        resultsContainer.empty();
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(function(movie) {
+                var movieContainer = $("<div>").addClass("movie-container");
+                var info = $("<p>").text(JSON.stringify(movie, null, 2));
+
+                movieContainer.append(info);
+                resultsContainer.append(movieContainer);
+            });
+        } else {
+            resultsContainer.html("<p>No movie results found.</p>");
+        }
     }
-}
+
+    function displayActorResults(data) {
+        var resultsContainer = $("#resultsContainer");
+        resultsContainer.empty();
+
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(function(actor) {
+                var actorContainer = $("<div>").addClass("actor-container");
+                var info = $("<p>").text(JSON.stringify(actor, null, 2));
+
+                actorContainer.append(info);
+                resultsContainer.append(actorContainer);
+            });
+        } else {
+            resultsContainer.html("<p>No actor results found.</p>");
+        }
+    }
+});

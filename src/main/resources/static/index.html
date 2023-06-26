@@ -2,22 +2,27 @@
 <html>
 <head>
     <title>Movie Search</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 <div class="container">
     <h1>Movie Search</h1>
-    <div class="search-container">
-        <input type="text" id="movieInput" placeholder="Enter movie name">
-        <button onclick="searchMovies()">Search Movies</button>
-    </div>
-    <div class="search-container">
-        <input type="text" id="actorInput" placeholder="Enter actor ID">
-        <button onclick="searchActors()">Search Actors</button>
-    </div>
-    <div id="resultContainer"></div>
-</div>
 
-<script src="script.js"></script>
+    <div class="search-container">
+        <label for="movieTitle">Movie Title:</label>
+        <input type="text" id="movieTitle" name="movieTitle"><br><br>
+
+        <label for="actorName">Actor Name:</label>
+        <input type="text" id="actorName" name="actorName"><br><br>
+
+        <button id="searchMoviesBtn">Search Movies</button>
+        <button id="searchActorsBtn">Search Actors</button>
+        <button id="searchUpcomingMoviesBtn">Search Upcoming Movies</button>
+    </div>
+
+    <div id="resultsContainer"></div>
+</div>
 </body>
 </html>
