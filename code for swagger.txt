@@ -1,111 +1,107 @@
 swagger: "2.0"
 info:
+  description: "API documentation for Movie Search"
   version: "1.0.0"
-  title: Movie Search API
-basePath: /api
-tags:
-  - name: actors
-    description: Operations related to actors
-  - name: movies
-    description: Operations related to movies
+  title: "Movie Search API"
+basePath: "/api"
 schemes:
-  - http
+  - "http"
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
 paths:
   /actors/search:
     post:
       tags:
-        - actors
-      summary: Search actors
-      consumes:
-        - application/json
-      produces:
-        - application/json
+        - Actors
+      summary: "Search actors"
+      description: "Search actors based on user input"
       parameters:
-        - in: body
-          name: userInput
-          description: User input for actor search
+        - name: userInput
+          in: body
+          description: "User input for actor search"
+          required: true
           schema:
             $ref: "#/definitions/UserInput"
       responses:
-        "201":
-          description: Actor search successful
-  /actors/{id}:
-    get:
-      tags:
-        - actors
-      summary: Get actor by ID
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: ID of the actor
-          required: true
-          type: string
-      responses:
-        "200":
-          description: Actor details retrieved successfully
+        201:
+          description: "Successful operation"
           schema:
-            $ref: "#/definitions/Actors"
+            type: array
+            items:
+              $ref: "#/definitions/Actors"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/Error"
   /movies/search:
     post:
       tags:
-        - movies
-      summary: Search movies
-      consumes:
-        - application/json
-      produces:
-        - application/json
+        - Movies
+      summary: "Search movies"
+      description: "Search movies based on user input"
       parameters:
-        - in: body
-          name: userInput
-          description: User input for movie search
+        - name: userInput
+          in: body
+          description: "User input for movie search"
+          required: true
           schema:
             $ref: "#/definitions/UserInput"
       responses:
-        "201":
-          description: Movie search successful
-  /movies/{id}:
+        201:
+          description: "Successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Movies"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/Error"
+  /movies/upcoming:
     get:
       tags:
-        - movies
-      summary: Get movie by ID
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: ID of the movie
-          required: true
-          type: string
+        - Movies
+      summary: "Search upcoming movies"
+      description: "Search upcoming movies"
       responses:
-        "200":
-          description: Movie details retrieved successfully
+        200:
+          description: "Successful operation"
           schema:
-            $ref: "#/definitions/Movies"
+            type: array
+            items:
+              $ref: "#/definitions/Movies"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/Error"
 definitions:
   Actors:
-    type: object
+    type: "object"
     properties:
-      nconst:
-        type: string
-      primaryName:
-        type: string
-      birthYear:
-        type: integer
-      deathYear:
-        type: integer
-      primaryProfession:
-        type: string
-      knownForTitles:
-        type: string
-  Movies:
-    type: object
-    properties:
-      _id:
-        type: string
       id:
-        type: string
+        type: "string"
+      primaryName:
+        type: "string"
+      birthYear:
+        type: "integer"
+        format: "int32"
+      deathYear:
+        type: "integer"
+        format: "int32"
+      primaryProfession:
+        type: "string"
+      knownForTitles:
+        type: "string"
+  Movies:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      imdbId:
+        type: "string"
       titleText:
         $ref: "#/definitions/TitleText"
       originalTitleText:
@@ -117,61 +113,63 @@ definitions:
       primaryImage:
         $ref: "#/definitions/PrimaryImage"
   TitleText:
-    type: object
+    type: "object"
     properties:
       text:
-        type: string
+        type: "string"
   YearRange:
-    type: object
+    type: "object"
     properties:
       year:
-        type: integer
+        type: "integer"
+        format: "int32"
       endYear:
-        type: integer
+        type: "integer"
+        format: "int32"
   ReleaseDate:
-    type: object
+    type: "object"
     properties:
       day:
-        type: integer
+        type: "integer"
+        format: "int32"
       month:
-        type: integer
+        type: "integer"
+        format: "int32"
       year:
-        type: integer
+        type: "integer"
+        format: "int32"
   PrimaryImage:
-    type: object
+    type: "object"
     properties:
       id:
-        type: string
+        type: "string"
       width:
-        type: integer
+        type: "integer"
+        format: "int32"
       height:
-        type: integer
+        type: "integer"
+        format: "int32"
       url:
-        type: string
+        type: "string"
       caption:
         $ref: "#/definitions/Caption"
   Caption:
-    type: object
+    type: "object"
     properties:
       text:
-        type: string
+        type: "string"
   UserInput:
-    type: object
+    type: "object"
     properties:
-      query:
-        type: string
-      filters:
-        $ref: "#/definitions/Filters"
-  Filters:
-    type: object
+      movieTitle:
+        type: "string"
+      actorName:
+        type: "string"
+  Error:
+    type: "object"
     properties:
-      genre:
-        type: string
-      language:
-        type: string
-      releaseYear:
-        $ref: "#/definitions/YearRange"
-      actor:
-        type: string
-      director:
-        type: string
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
